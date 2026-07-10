@@ -59,6 +59,7 @@ function App() {
   ]);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const suggestionsRef = useRef(null);
 
   // --- New Dashboard / Directory States ---
   const [activeTab, setActiveTab] = useState('log');
@@ -437,6 +438,8 @@ function App() {
         setStats(null);
         setDirectoryHcps([]);
         setSelectedDirHcp(null);
+        // Auto-refresh directory so new HCP shows immediately
+        fetchDirectory();
       } else {
         const errorData = await res.json();
         setSubmitStatus({ success: false, message: `Failed to save: ${errorData.detail || 'Unknown server error'}` });
@@ -531,7 +534,7 @@ function App() {
                           <div 
                             key={hcp.id} 
                             className="suggestion-item"
-                            onClick={() => handleSelectHcp(hcp)}
+                            onClick={() => selectHcp(hcp)}
                           >
                             <span className="suggestion-name">{hcp.name}</span>
                             <span className="suggestion-detail">{hcp.specialty} • {hcp.institution}</span>
@@ -602,7 +605,7 @@ function App() {
                         placeholder="Add attendee name..."
                         value={attendeeInput}
                         onChange={(e) => setAttendeeInput(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAttendee(); } }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addAttendee(e); } }}
                       />
                     </div>
                     <button 
@@ -694,7 +697,7 @@ function App() {
                           placeholder="Brochure or Clinical Trial PDF name..."
                           value={materialInput}
                           onChange={(e) => setMaterialInput(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMaterial(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addMaterial(e); } }}
                           autoFocus
                         />
                         <button 
@@ -752,7 +755,7 @@ function App() {
                           placeholder="Medicine Sample name and Qty..."
                           value={sampleInput}
                           onChange={(e) => setSampleInput(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSample(); } }}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSample(e); } }}
                           autoFocus
                         />
                         <button 
